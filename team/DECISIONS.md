@@ -98,3 +98,60 @@ Append-only. Record decisions made where SPEC/PLAN was ambiguous.
 - **Empty script shows an explicit empty state** ("This script has no
   content") tinted from the current text color; `contentHeight` stays 0 so
   the engine never auto-stops instantly.
+
+## WP5 — QA round 1 fixes (2026-07-30)
+
+- **Bug A (truncation):** the viewport `.frame(height:)` proposed a finite
+  height to the text, so SwiftUI truncated it with an ellipsis after ~1.5
+  screens (single-paragraph scripts also defeat line-based chunking — one
+  giant chunk gets the finite proposal directly). Fixed with
+  `.fixedSize(horizontal: false, vertical: true)` on the text block so it
+  always lays out at its natural height inside the clipped viewport.
+- **Bug B root cause 1 — no auto-stop:** the preference-key height
+  measurement (background GeometryReader → onPreferenceChange) was never
+  delivered on iPadOS 26, so `engine.contentHeight` stayed 0 ("unknown"),
+  auto-stop stayed disabled, and playback scrolled forever into black.
+  Replaced with `.onGeometryChange(for:)` (back-deployed to iOS 16/macOS 13),
+  verified live: contentHeight = 12447.5 pt for the 1,000-word script and
+  auto-stop fires with `offset == contentHeight`, controls revealed.
+- **Bug B root cause 2 — dead touch:** the overlay's background/text are pure
+  SwiftUI DRAWING, which does not participate in UIKit hit-testing; taps over
+  the prompter hit-tested to the NavigationSplitView columns UNDERNEATH the
+  overlay (proved via `hitTest:` in lldb — the script list's UICollectionView
+  received them), so tap-to-reveal never fired (the control bar worked only
+  because its material background is a real platform view). Fixed with an
+  empty `TouchInterceptor` UIViewRepresentable/NSViewRepresentable as the
+  overlay's bottom layer: a real hit-testable surface above the hidden
+  columns. Also prevents touches from leaking into the hidden editor/list.
+- **Bug C (scroll rate) — measurement artifact, engine correct:** instrumented
+  DisplayLinkClock and engine live in the iPad simulator: single clock
+  instance, uniform ~16.67 ms deltas, `offset` advanced exactly 30 pt per
+  0.5 s at speed 60 (os_log timestamps), and two `simctl io screenshot`s
+  5.3 s apart showed the RENDERED text advance 4 line-pitches ≈ 306 pt
+  ≈ 58 pt/s. QA's 280–1000 pt/s figures came from nominal "t=3s/6s" labels on
+  screenshots whose real capture times were skewed by multi-second tool
+  round-trips. No engine/clock change was needed (Engine/ untouched).
+- **Bug D (invisible iPad popover):** settings presentation is now a `.sheet`
+  with `.presentationDetents([.medium, .large])` + NavigationStack/Done on
+  iOS (popovers from the overlay presented invisibly on iPadOS 26); macOS
+  keeps the anchored fixed-size popover.
+- **Bug E (macOS toolbar over prompter):** RootView hides the window toolbar
+  while the prompter is presented:
+  `.toolbar(prompting ? .hidden : .automatic, for: .windowToolbar)` (macOS
+  only). Verified via accessibility: toolbar exists before Start Prompter,
+  `exists toolbar 1 == false` while prompting, restored after Esc. This is a
+  deliberate minimal edit to scaffold-owned RootView (ownership boundaries
+  were lifted for the fix round).
+- **Bug F (Space on macOS) — real, not an artifact:** a bare-Space menu key
+  equivalent does not fire in this SwiftUI menu setup (synthetic ↑/↓ menu
+  equivalents work; Space does not). Space is now ALSO bound as a hidden
+  view-level `.keyboardShortcut(.space)` button on macOS; view-level
+  shortcuts resolve in the responder chain BEFORE menu equivalents, so the
+  (kept) menu item cannot double-fire. Verified with synthetic keystrokes:
+  Space → menu title flips Play→Pause, Space again → Play (position
+  retained), Esc exits and re-disables the Playback menu.
+- **Sim-verification note:** an earlier broken-looking editor during this
+  round (blank detail pane, missing toolbar) was corrupted INCREMENTAL build
+  state in DerivedData — a clean rebuild of identical sources rendered
+  correctly. If the app looks structurally broken in the simulator, clean
+  DerivedData before debugging source.

@@ -1,14 +1,5 @@
 import SwiftUI
 
-/// Reports the laid-out height of the prompter text so PrompterView can feed
-/// `engine.contentHeight` (enables auto-stop at the end).
-struct PrompterTextHeightKey: PreferenceKey {
-    static var defaultValue: Double = 0
-    static func reduce(value: inout Double, nextValue: () -> Double) {
-        value = nextValue()
-    }
-}
-
 /// The script content as ONE laid-out block of styled text (WP5).
 ///
 /// Layout happens once per content/settings/width change; per-frame scrolling
@@ -45,12 +36,9 @@ struct PrompterTextBlock: View, Equatable {
             .foregroundStyle(settings.textColor.color)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, viewportWidth * settings.marginFraction)
-            .background(
-                GeometryReader { proxy in
-                    Color.clear.preference(key: PrompterTextHeightKey.self,
-                                           value: proxy.size.height)
-                }
-            )
+        // Height is measured by PrompterView via onGeometryChange — a
+        // preference key from a background GeometryReader was not reliably
+        // delivered on iPadOS 26 (QA Bug B).
     }
 
     @ViewBuilder

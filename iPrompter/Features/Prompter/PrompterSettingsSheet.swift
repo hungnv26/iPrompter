@@ -6,8 +6,30 @@ import SwiftUI
 /// without interrupting playback (SPEC F3).
 struct PrompterSettingsSheet: View {
     @Bindable var store: SettingsStore
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
+        // QA Bug D: presented as a sheet on iOS (popovers rendered invisibly
+        // on iPadOS), as a fixed-size popover on macOS.
+        #if os(iOS)
+        NavigationStack {
+            settingsForm
+                .navigationTitle("Reading Settings")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
+                    }
+                }
+        }
+        .presentationDetents([.medium, .large])
+        #else
+        settingsForm
+            .frame(width: 380, height: 540)
+        #endif
+    }
+
+    private var settingsForm: some View {
         Form {
             Section("Font") {
                 Picker("Family", selection: $store.settings.font) {
@@ -64,7 +86,6 @@ struct PrompterSettingsSheet: View {
             }
         }
         .formStyle(.grouped)
-        .frame(width: 380, height: 540)
     }
 
     // MARK: Swatches (8 fixed presets, no custom picker — SPEC F3)

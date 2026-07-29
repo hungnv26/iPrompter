@@ -24,6 +24,13 @@ struct RootView: View {
                 ContentUnavailableView("No Script Selected", systemImage: "doc.text")
             }
         }
+        #if os(macOS)
+        // QA Bug E: the window toolbar (+, search, word-count pill) floated
+        // over the prompter text. Hide it while the prompter is presented so
+        // the reading view is genuinely "full-screen, no bars" (SPEC F3).
+        .toolbar(appState.prompterScript == nil ? .automatic : .hidden,
+                 for: .windowToolbar)
+        #endif
         .overlay {
             // Cross-platform full-screen presentation (fullScreenCover does not
             // exist on macOS). WP5 implements PrompterView.

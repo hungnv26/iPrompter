@@ -32,6 +32,18 @@ struct PrompterView: View {
                 settingsStore.settings.backgroundColor.color
                     .ignoresSafeArea()
 
+                // QA Bug B (dead touch): the prompter overlay's color/text are
+                // pure SwiftUI drawing, so UIKit/AppKit hit-testing sent taps
+                // to the hidden NavigationSplitView columns UNDERNEATH the
+                // overlay (verified via hitTest: the script list's
+                // UICollectionView received them) and the tap-to-reveal
+                // gesture never fired. This empty platform view gives the
+                // overlay a real hit-testable surface above those columns, so
+                // taps route to the prompter — and can no longer leak into
+                // the hidden editor/list.
+                TouchInterceptor()
+                    .ignoresSafeArea()
+
                 readingContainer(size: geometry.size)
 
                 keyboardShortcutButtons
@@ -57,9 +69,6 @@ struct PrompterView: View {
             if case .active = phase { registerInteraction() }
         }
         #endif
-        .onPreferenceChange(PrompterTextHeightKey.self) { height in
-            engine.contentHeight = height
-        }
         .onReceive(autoHideTick) { _ in autoHideIfIdle() }
         .onChange(of: engine.state) { registerInteraction() }
         .onChange(of: engine.speed) {
@@ -83,6 +92,20 @@ struct PrompterView: View {
             viewportWidth: size.width
         )
         .equatable() // Text is laid out once; scrolling is translation only.
+        // QA Bug A: the viewport frame below proposes a FINITE height, which
+        // makes Text truncate with an ellipsis after ~1.5 screens. fixedSize
+        // re-proposes nil height so the block always lays out at its full
+        // natural height inside the clipped viewport.
+        .fixedSize(horizontal: false, vertical: true)
+        // QA Bug B (no auto-stop): the WP5 preference-key measurement was
+        // never delivered on iPadOS 26 (engine.contentHeight stayed 0, which
+        // disables auto-stop, so playback scrolled forever into black).
+        // onGeometryChange reports the laid-out height reliably.
+        .onGeometryChange(for: Double.self) { proxy in
+            proxy.size.height
+        } action: { height in
+            engine.contentHeight = height
+        }
         .offset(y: -engine.offset)
         .frame(width: size.width, height: size.height, alignment: .top)
         .clipped()
@@ -98,11 +121,17 @@ struct PrompterView: View {
             // Esc exits on both platforms (cancelAction == Escape).
             Button("Exit Prompter", action: exitPrompter)
                 .keyboardShortcut(.cancelAction)
-            #if os(iOS)
-            // On macOS these three keys are bound by the Playback menu
-            // (PrompterCommands) instead — one binding per key per platform.
+            // QA Bug F: a bare-Space menu key equivalent does not fire on
+            // macOS (menu clicks and ↑/↓ menu equivalents work — Space is
+            // special-cased by AppKit). Space is therefore bound HERE on both
+            // platforms; view-level shortcuts are resolved in the responder
+            // chain BEFORE menu equivalents, so the menu item (kept for
+            // discoverability) can never double-fire.
             Button("Play/Pause") { engine.togglePlayPause() }
                 .keyboardShortcut(.space, modifiers: [])
+            #if os(iOS)
+            // On macOS ↑/↓ are bound by the Playback menu (PrompterCommands),
+            // which QA verified working — one binding per key per platform.
             Button("Faster") { engine.increaseSpeed() }
                 .keyboardShortcut(.upArrow, modifiers: [])
             Button("Slower") { engine.decreaseSpeed() }
@@ -147,3 +176,28 @@ struct PrompterView: View {
 private final class InteractionTracker {
     var lastInteraction: Date = .now
 }
+
+/// Empty platform view giving the prompter overlay a REAL hit-testable
+/// surface (see the QA Bug B comment in `PrompterView.body`). SwiftUI-drawn
+/// pixels alone do not participate in UIKit/AppKit hit-testing, so without
+/// this, interactions over the overlay fall through to the navigation
+/// columns hidden underneath it.
+#if os(iOS)
+private struct TouchInterceptor: UIViewRepresentable {
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {}
+}
+#elseif os(macOS)
+private struct TouchInterceptor: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView {
+        NSView()
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {}
+}
+#endif

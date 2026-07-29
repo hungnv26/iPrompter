@@ -144,9 +144,18 @@ struct PrompterControlsView: View {
             }
             .buttonStyle(.bordered)
             .accessibilityLabel("Reading settings")
+            // QA Bug D: on iPadOS the popover presented invisibly (dimmed the
+            // bar, rendered nothing). A sheet is the reliable presentation on
+            // iOS; macOS keeps the anchored popover.
+            #if os(iOS)
+            .sheet(isPresented: $showSettings) {
+                PrompterSettingsSheet(store: store)
+            }
+            #else
             .popover(isPresented: $showSettings, arrowEdge: .top) {
                 PrompterSettingsSheet(store: store)
             }
+            #endif
 
             Button(action: onExit) {
                 Image(systemName: "xmark")
