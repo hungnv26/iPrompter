@@ -66,3 +66,35 @@ Append-only. Record decisions made where SPEC/PLAN was ambiguous.
   `xcodebuild … test CODE_SIGNING_ALLOWED=NO 'TEST_HOST=$(BUILT_PRODUCTS_DIR)/iPrompter.app/Contents/MacOS/iPrompter'`.
   Proper fix in project.yml: set the tests target's TEST_HOST per-platform or
   use `$(BUNDLE_EXECUTABLE_FOLDER_PATH)`.
+
+## WP5 — Prompter reading view (2026-07-30)
+
+- **Keyboard via hidden `.keyboardShortcut` buttons, not `.onKeyPress`.**
+  Deployment baseline is iOS 17.0 / macOS 14.0 (project.yml) and `.onKeyPress`
+  needs 17.4 / 14.4, so PLAN's fallback was taken. Each key is bound exactly
+  once per platform to avoid duplicate-key-equivalent conflicts: on macOS,
+  Space/↑/↓ are real "Playback" menu items (PrompterCommands via
+  `.focusedSceneValue(\.prompterEngine)`), and only Esc is a hidden button;
+  on iOS all four keys are hidden buttons inside PrompterView.
+- **macOS display link = `NSScreen.displayLink(target:selector:)`** (macOS 14
+  API returning a CADisplayLink — same run-loop handling as iOS) with a 60 Hz
+  Timer fallback when no screen exists (headless CI). CVDisplayLink was
+  avoided: deprecated in macOS 15 and needlessly thread-hostile.
+- **Long scripts are chunked by lines (24 lines per `Text`)** into a non-lazy
+  VStack whose spacing equals the line-spacing gap, so chunk boundaries render
+  identically to the newlines they replace. The stack is wrapped in
+  `.equatable()` and translated as ONE unit by `.offset(y: -engine.offset)` —
+  layout runs only when content/settings/width change, never per frame.
+- **`engine.contentHeight` = measured text-block height**, so auto-stop fires
+  when the last line has scrolled past the top edge (text fully read).
+- **Auto-hide only during playback** (per SPEC F3 wording): a 0.5 s timer
+  checks a last-interaction timestamp; pause/stop/any interaction reveals the
+  bar. The timestamp lives in a non-observed reference type so macOS
+  mouse-move events don't re-evaluate the view body continuously. Auto-hide
+  is suppressed while the settings popover is open (it anchors to the bar).
+- **Speed changes persist immediately** to `settings.speed` via
+  `onChange(of: engine.speed)`, and the engine is seeded from the store on
+  appear — SPEC F3 "speed settings are global and persist across launches".
+- **Empty script shows an explicit empty state** ("This script has no
+  content") tinted from the current text color; `contentHeight` stays 0 so
+  the engine never auto-stops instantly.

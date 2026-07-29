@@ -11,6 +11,10 @@ struct iPrompterApp: App {
                 .environment(appState)
         }
         .modelContainer(for: [Script.self, Folder.self])
-        // WP5 adds `.commands { ... }` here for macOS menu items (transport, speed, exit).
+        // WP5: macOS "Playback" menu (Play/Pause ⎵, Faster ↑, Slower ↓),
+        // enabled only while the prompter is presented. No-op on iOS.
+        .commands {
+            PrompterCommands()
+        }
     }
 }
