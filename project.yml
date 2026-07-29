@@ -41,6 +41,13 @@ targets:
     sources:
       - path: iPrompterTests
         type: syncedFolder
+    settings:
+      base:
+        # Multiplatform-safe test host (Xcode template style):
+        # BUNDLE_EXECUTABLE_FOLDER_PATH is empty on iOS and "Contents/MacOS"
+        # on macOS. Overrides XcodeGen's auto-generated iOS-only TEST_HOST.
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/iPrompter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iPrompter"
+        BUNDLE_LOADER: "$(TEST_HOST)"
     dependencies:
       - target: iPrompter
 schemes:
