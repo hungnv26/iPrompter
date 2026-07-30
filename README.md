@@ -2,6 +2,16 @@
 
 iPrompter is a distraction-free native teleprompter for presenters using iPad or macOS. Mount an iPad on a mirror-rig or read directly from a Mac screen, then open a script and scroll it at a steady, controllable speed while reading aloud. The app is fast, minimal, and works entirely offline with no accounts or cloud services.
 
+## Screenshots
+
+**Reading view** — full-screen, distraction-free, scrolling at a constant 60 pts/s. The control bar auto-hides after 3 seconds of inactivity and reappears on tap, so nothing sits between you and the script while you present.
+
+![iPrompter reading view on iPad, scrolling a script with the transport controls showing speed at 60 pts/s](docs/screenshots/prompter-reading-view.png)
+
+**Script library** — folders in the sidebar, scripts in the middle sorted by most recently modified, and the editor on the right with live word count and estimated reading time. Every edit auto-saves; there is no Save button.
+
+![iPrompter script library on iPad, showing the folder sidebar, script list, and editor with a 328-word script](docs/screenshots/script-library.png)
+
 ## Requirements
 
 - **Xcode 26 or later**
@@ -11,7 +21,7 @@ iPrompter is a distraction-free native teleprompter for presenters using iPad or
 
 ## Build and Run
 
-From the repo root `/Users/macs/Projects/iPrompter`:
+Run these from the repo root:
 
 ### Build for iPad Simulator
 ```bash
