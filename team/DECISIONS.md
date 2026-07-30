@@ -155,3 +155,45 @@ Append-only. Record decisions made where SPEC/PLAN was ambiguous.
   state in DerivedData — a clean rebuild of identical sources rendered
   correctly. If the app looks structurally broken in the simulator, clean
   DerivedData before debugging source.
+
+## Round 3 (engineering manager) — bugs G, H landed
+
+The WP5 engineer was interrupted mid-verification; its work-in-progress was
+reviewed, completed, and verified by the manager before commit.
+
+**Bug G (iPad tap-to-reveal during playback) — FIXED.** Root cause: the
+`TouchInterceptor` platform view wins UIKit hit-testing, so it *consumed* the
+touches it received and a SwiftUI `.onTapGesture` on an ancestor never fired.
+Fix: the reveal gesture is now a real `UITapGestureRecognizer` attached to the
+interceptor itself, calling `registerInteraction()`.
+
+Verification note (important for future QA): this fix CANNOT be confirmed by
+screenshot with the available tooling. The control bar auto-hides 3 s after the
+last interaction (SPEC F3), while a tap→screenshot round trip through the
+simulator tooling measures ~5 s — so every screenshot lands after the bar has
+already re-hidden, which looks identical to "the tap did nothing". This is what
+produced round 2's Bug G report and the previous engineer's mislabelled
+`r3-g5-*` artifact. It was instead verified deterministically from os_log
+frame telemetry: a mid-playback tap at 14:12:12.116 fired
+`registerInteraction` with `controlsVisible=0`, and the view body then
+re-rendered with `controlsVisible=1` for 334 consecutive frames (~3 s, i.e.
+exactly one auto-hide window) before hiding again. The same telemetry
+independently confirmed scroll rate: `offset` advances 1.0 pt per 16.7 ms
+frame = 60 pt/s at readout 60, closing out round 1's Bug C for good.
+
+**Bug H (macOS focus leak / silent data corruption) — FIXED.** Two-part fix:
+(1) `RootView` now *replaces* the window content with the prompter instead of
+overlaying it, so while prompting there is no `splitView` — and therefore no
+`EditorView`/`TextEditor` — in the hierarchy at all. Keystrokes cannot mutate
+script content because the view that received them no longer exists; this is a
+structural guarantee rather than a focus heuristic. (2) macOS key handling
+moved to an `NSEvent` local monitor owned by the interceptor, which sees keys
+before menu key-equivalent matching and the responder chain and swallows the
+ones it handles — fixing round 1's Bug F (bare-Space menu equivalents never
+fired) without any double-fire risk. Hidden `.keyboardShortcut` buttons remain
+the iOS path only, so there is exactly one binding per key per platform.
+
+**Debug instrumentation stripped.** The interrupted engineer left three
+`os_log` call sites in `PrompterView` (including one in `body`, firing every
+frame at 60 fps). All removed along with the `import os.log`; builds and the
+32-test suite re-verified green afterwards.

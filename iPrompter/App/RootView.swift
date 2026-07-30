@@ -10,6 +10,33 @@ struct RootView: View {
     @State private var selectedScript: Script?
 
     var body: some View {
+        Group {
+            // Cross-platform full-screen presentation (fullScreenCover does not
+            // exist on macOS). QA Bug H: presenting the prompter as an .overlay
+            // kept the split view — and the editor's focused text view — ALIVE
+            // underneath it, so key events (Space/Esc/typing) went to the
+            // hidden TextEditor and silently mutated the script mid-prompt.
+            // The prompter now REPLACES the window content: while it is up
+            // there is no editor in the hierarchy to hold key focus or receive
+            // leaked input. Sidebar/script selection live in this view's
+            // @State, so the editor returns to the same script on exit.
+            if let script = appState.prompterScript {
+                PrompterView(script: script)
+                    .ignoresSafeArea()
+            } else {
+                splitView
+            }
+        }
+        #if os(macOS)
+        // QA Bug E: the window toolbar (+, search, word-count pill) floated
+        // over the prompter text. Hide it while the prompter is presented so
+        // the reading view is genuinely "full-screen, no bars" (SPEC F3).
+        .toolbar(appState.prompterScript == nil ? .automatic : .hidden,
+                 for: .windowToolbar)
+        #endif
+    }
+
+    private var splitView: some View {
         NavigationSplitView {
             SidebarView(selection: $sidebarSelection)
         } content: {
@@ -22,21 +49,6 @@ struct RootView: View {
                 EditorView(script: script)
             } else {
                 ContentUnavailableView("No Script Selected", systemImage: "doc.text")
-            }
-        }
-        #if os(macOS)
-        // QA Bug E: the window toolbar (+, search, word-count pill) floated
-        // over the prompter text. Hide it while the prompter is presented so
-        // the reading view is genuinely "full-screen, no bars" (SPEC F3).
-        .toolbar(appState.prompterScript == nil ? .automatic : .hidden,
-                 for: .windowToolbar)
-        #endif
-        .overlay {
-            // Cross-platform full-screen presentation (fullScreenCover does not
-            // exist on macOS). WP5 implements PrompterView.
-            if let script = appState.prompterScript {
-                PrompterView(script: script)
-                    .ignoresSafeArea()
             }
         }
     }

@@ -1,5 +1,8 @@
 import SwiftUI
 import Combine
+#if os(macOS)
+import AppKit
+#endif
 
 /// Full-screen reading view (WP5): engine-driven scrolling text, mirror
 /// transforms on the reading container ONLY, auto-hiding control overlay,
@@ -38,27 +41,63 @@ struct PrompterView: View {
                 // overlay (verified via hitTest: the script list's
                 // UICollectionView received them) and the tap-to-reveal
                 // gesture never fired. This empty platform view gives the
-                // overlay a real hit-testable surface above those columns, so
-                // taps route to the prompter — and can no longer leak into
-                // the hidden editor/list.
-                TouchInterceptor()
+                // overlay a real hit-testable surface, so taps route to the
+                // prompter and can never leak into the editor/list.
+                //
+                // QA Bug G: because this platform view WINS hit-testing over
+                // the bare background, touches on it are consumed by UIKit and
+                // never reach the ancestor SwiftUI `.onTapGesture` — so
+                // tap-to-reveal was dead whenever the bar was hidden. The
+                // reveal gesture therefore lives ON the interceptor itself as
+                // a real platform gesture recognizer.
+                #if os(macOS)
+                // QA Bug H: the interceptor also owns an NSEvent local key
+                // monitor (see TouchInterceptor) so Space/↑/↓/Esc are handled
+                // deterministically while the prompter is up — hidden
+                // `.keyboardShortcut` buttons and bare-key menu equivalents
+                // proved unreliable on macOS (Space never fired under
+                // HID-level key injection even with nothing else focused).
+                TouchInterceptor(onTap: registerInteraction,
+                                 onKeyDown: handleKeyDown)
                     .ignoresSafeArea()
+                #else
+                TouchInterceptor(onTap: registerInteraction)
+                    .ignoresSafeArea()
+                #endif
 
                 readingContainer(size: geometry.size)
 
+                #if os(iOS)
                 keyboardShortcutButtons
+                #endif
 
-                if controlsVisible {
-                    PrompterControlsView(
-                        engine: engine,
-                        store: settingsStore,
-                        showSettings: $showSettings,
-                        onExit: exitPrompter
-                    )
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 20)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                }
+                // QA Bug G (part 2): the bar must NOT be shown by inserting it
+                // with `if controlsVisible` + .transition — during playback the
+                // engine invalidates this body every frame, and the per-frame
+                // no-animation transactions kept restarting the insertion
+                // transition from its inactive state, so the bar stayed at
+                // ~opacity 0: invisible AND skipped by hit-testing (verified
+                // live: body rendered with controlsVisible == true for 300+
+                // frames while the screen showed no bar and taps at the bar's
+                // location hit the interceptor). Auto-hide worked because a
+                // REMOVED view is no longer rebuilt per frame. The bar is
+                // therefore always in the hierarchy, and visibility is a
+                // resting attribute of the body (opacity/offset), which
+                // per-frame re-evaluation can only ever drive TOWARD the
+                // correct value. .animation(value:) animates just the flips.
+                PrompterControlsView(
+                    engine: engine,
+                    store: settingsStore,
+                    showSettings: $showSettings,
+                    onExit: exitPrompter
+                )
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
+                .opacity(controlsVisible ? 1 : 0)
+                .offset(y: controlsVisible ? 0 : 24)
+                .allowsHitTesting(controlsVisible)
+                .accessibilityHidden(!controlsVisible)
+                .animation(.easeOut(duration: 0.2), value: controlsVisible)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
@@ -113,30 +152,29 @@ struct PrompterView: View {
         .allowsHitTesting(false)
     }
 
-    // MARK: Keyboard (hidden buttons work from iOS 17.0 / macOS 14.0;
-    // .onKeyPress would need 17.4 / 14.4 — see team/PLAN.md and DECISIONS.md)
+    // MARK: Keyboard — iOS only (hidden buttons work from iOS 17.0;
+    // .onKeyPress would need 17.4 — see team/PLAN.md and DECISIONS.md).
+    //
+    // QA Bug H: on macOS ALL prompter keys (Space/↑/↓/Esc) are handled by the
+    // NSEvent local monitor in TouchInterceptor (see handleKeyDown) — hidden
+    // `.keyboardShortcut` buttons proved unreliable there and are compiled
+    // out, so each key has exactly ONE binding path per platform. The
+    // Playback menu items (PrompterCommands) are kept for discoverability;
+    // the monitor swallows handled keys before menu-equivalent matching, so
+    // they cannot double-fire.
 
+    #if os(iOS)
     private var keyboardShortcutButtons: some View {
         Group {
-            // Esc exits on both platforms (cancelAction == Escape).
+            // Esc exits (cancelAction == Escape).
             Button("Exit Prompter", action: exitPrompter)
                 .keyboardShortcut(.cancelAction)
-            // QA Bug F: a bare-Space menu key equivalent does not fire on
-            // macOS (menu clicks and ↑/↓ menu equivalents work — Space is
-            // special-cased by AppKit). Space is therefore bound HERE on both
-            // platforms; view-level shortcuts are resolved in the responder
-            // chain BEFORE menu equivalents, so the menu item (kept for
-            // discoverability) can never double-fire.
             Button("Play/Pause") { engine.togglePlayPause() }
                 .keyboardShortcut(.space, modifiers: [])
-            #if os(iOS)
-            // On macOS ↑/↓ are bound by the Playback menu (PrompterCommands),
-            // which QA verified working — one binding per key per platform.
             Button("Faster") { engine.increaseSpeed() }
                 .keyboardShortcut(.upArrow, modifiers: [])
             Button("Slower") { engine.decreaseSpeed() }
                 .keyboardShortcut(.downArrow, modifiers: [])
-            #endif
         }
         .buttonStyle(.plain)
         .labelsHidden()
@@ -144,13 +182,47 @@ struct PrompterView: View {
         .opacity(0)
         .accessibilityHidden(true)
     }
+    #endif
+
+    #if os(macOS)
+    /// QA Bug H: authoritative macOS key handling for the prompter, driven by
+    /// the TouchInterceptor's NSEvent local monitor. Returns true when the
+    /// key was handled (the event is then swallowed, so it can neither reach
+    /// a hidden shortcut button/menu equivalent — no double-fire — nor any
+    /// other responder). Space via `.keyboardShortcut`/menu equivalents was
+    /// unreliable under real HID key events, so the shortcuts live here.
+    private func handleKeyDown(_ event: NSEvent) -> Bool {
+        guard event.modifierFlags.intersection([.command, .option, .control]).isEmpty,
+              !showSettings // don't hijack keys while the settings popover is up
+        else { return false }
+        switch event.keyCode {
+        case 49: // Space
+            engine.togglePlayPause()
+            return true
+        case 126: // ↑
+            engine.increaseSpeed()
+            return true
+        case 125: // ↓
+            engine.decreaseSpeed()
+            return true
+        case 53: // Esc
+            exitPrompter()
+            return true
+        default:
+            return false
+        }
+    }
+    #endif
 
     // MARK: Control-overlay visibility
 
+    // Visibility flips are plain state writes; the .animation(value:) on the
+    // control bar animates them (withAnimation-driven transitions proved
+    // unreliable under the per-frame playback invalidation — see Bug G note).
     private func registerInteraction() {
         interaction.lastInteraction = .now
         if !controlsVisible {
-            withAnimation(.easeOut(duration: 0.2)) { controlsVisible = true }
+            controlsVisible = true
         }
     }
 
@@ -160,7 +232,7 @@ struct PrompterView: View {
               !showSettings,
               Date.now.timeIntervalSince(interaction.lastInteraction) >= Self.autoHideDelay
         else { return }
-        withAnimation(.easeIn(duration: 0.25)) { controlsVisible = false }
+        controlsVisible = false
     }
 
     // MARK: Exit
@@ -180,24 +252,113 @@ private final class InteractionTracker {
 /// Empty platform view giving the prompter overlay a REAL hit-testable
 /// surface (see the QA Bug B comment in `PrompterView.body`). SwiftUI-drawn
 /// pixels alone do not participate in UIKit/AppKit hit-testing, so without
-/// this, interactions over the overlay fall through to the navigation
-/// columns hidden underneath it.
+/// this, interactions over the overlay would not route to the prompter.
+///
+/// Because this view consumes the touches it wins (QA Bug G), the
+/// tap-anywhere-to-reveal gesture is attached HERE as a platform gesture
+/// recognizer calling `onTap` — a SwiftUI `.onTapGesture` on an ancestor
+/// never fires for touches that UIKit/AppKit delivers to a foreign view.
 #if os(iOS)
 private struct TouchInterceptor: UIViewRepresentable {
+    var onTap: () -> Void
+
+    final class Coordinator: NSObject {
+        var onTap: () -> Void
+
+        init(onTap: @escaping () -> Void) {
+            self.onTap = onTap
+        }
+
+        @objc func handleTap() {
+            onTap()
+        }
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onTap: onTap)
+    }
+
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
         view.backgroundColor = .clear
+        let tap = UITapGestureRecognizer(target: context.coordinator,
+                                         action: #selector(Coordinator.handleTap))
+        view.addGestureRecognizer(tap)
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {}
+    func updateUIView(_ uiView: UIView, context: Context) {
+        context.coordinator.onTap = onTap
+    }
 }
 #elseif os(macOS)
 private struct TouchInterceptor: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView {
-        NSView()
+    var onTap: () -> Void
+    /// Returns true when the key event was handled; the event is swallowed.
+    var onKeyDown: (NSEvent) -> Bool
+
+    final class Coordinator: NSObject {
+        var onTap: () -> Void
+        var onKeyDown: (NSEvent) -> Bool
+        private var keyMonitor: Any?
+
+        init(onTap: @escaping () -> Void,
+             onKeyDown: @escaping (NSEvent) -> Bool) {
+            self.onTap = onTap
+            self.onKeyDown = onKeyDown
+        }
+
+        @objc func handleTap() {
+            onTap()
+        }
+
+        /// QA Bug H: an NSEvent LOCAL monitor sees key events before menu
+        /// key-equivalent matching and before the responder chain, so the
+        /// prompter's keys work no matter what has (or steals) key focus and
+        /// for every injection path (physical keyboard, HID, AppleScript).
+        /// Returning nil swallows handled keys, so they can never fall
+        /// through to anything else. Lives only as long as the prompter's
+        /// interceptor view (started in makeNSView, stopped in dismantle).
+        func startKeyMonitor() {
+            guard keyMonitor == nil else { return }
+            keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+                guard let self else { return event }
+                return self.onKeyDown(event) ? nil : event
+            }
+        }
+
+        func stopKeyMonitor() {
+            if let keyMonitor {
+                NSEvent.removeMonitor(keyMonitor)
+                self.keyMonitor = nil
+            }
+        }
+
+        deinit {
+            stopKeyMonitor()
+        }
     }
 
-    func updateNSView(_ nsView: NSView, context: Context) {}
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onTap: onTap, onKeyDown: onKeyDown)
+    }
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        let click = NSClickGestureRecognizer(target: context.coordinator,
+                                             action: #selector(Coordinator.handleTap))
+        view.addGestureRecognizer(click)
+        context.coordinator.startKeyMonitor()
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        context.coordinator.onTap = onTap
+        context.coordinator.onKeyDown = onKeyDown
+    }
+
+    static func dismantleNSView(_ nsView: NSView, coordinator: Coordinator) {
+        coordinator.stopKeyMonitor()
+    }
 }
 #endif
