@@ -19,6 +19,7 @@
 /* Begin PBXFileReference section */
 		0DEE464515D52FB53DC49F88 /* iPrompter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = iPrompter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2535BEB0AF24EB47D440C5F7 /* iPrompterTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = iPrompterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		450943595596B3EBA8BE5DCE /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -46,10 +47,19 @@
 		00095E8B6399F2E45598BA55 = {
 			isa = PBXGroup;
 			children = (
+				6843F8CC7805992C062877FC /* Config */,
 				2FDC832AFA84FA877667DD41 /* iPrompter */,
 				346EE62EBAE333B1E5D8DB6C /* iPrompterTests */,
 				E90B1B833C5F00569F7AF8E3 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		6843F8CC7805992C062877FC /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				450943595596B3EBA8BE5DCE /* Signing.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		E90B1B833C5F00569F7AF8E3 /* Products */ = {
@@ -117,11 +127,9 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					58C8E10C67248C1D7528978D = {
-						DevelopmentTeam = TEAMID_REDACTED;
 						ProvisioningStyle = Automatic;
 					};
 					E94F61041F6789C7FDB46B2D = {
-						DevelopmentTeam = TEAMID_REDACTED;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -227,7 +235,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = TEAMID_REDACTED;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -253,6 +260,7 @@
 		};
 		2E5C78C1C5708971C1C4C79F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 450943595596B3EBA8BE5DCE /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -336,7 +344,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = TEAMID_REDACTED;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -389,6 +396,7 @@
 		};
 		C5678AED7C4DAC1ADB363B29 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 450943595596B3EBA8BE5DCE /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

@@ -1,0 +1,17 @@
+// Shared signing configuration.
+//
+// DEVELOPMENT_TEAM is deliberately NOT committed — it identifies a specific
+// Apple Developer account and every contributor needs their own. Supply yours
+// in Config/Signing.local.xcconfig (untracked), which this file pulls in when
+// present:
+//
+//     DEVELOPMENT_TEAM = YOURTEAMID
+//
+// Alternatively pass it per build:
+//
+//     xcodebuild ... DEVELOPMENT_TEAM=YOURTEAMID -allowProvisioningUpdates
+//
+// or just pick your team in Xcode under Signing & Capabilities. Simulator and
+// macOS builds need none of this — they use ad-hoc signing.
+
+#include? "Signing.local.xcconfig"

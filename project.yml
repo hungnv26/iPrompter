@@ -16,11 +16,14 @@ settings:
     # signing so local Mac builds/tests need no provisioning round trip.
     CODE_SIGN_IDENTITY: "-"
     CODE_SIGN_IDENTITY[sdk=iphoneos*]: "Apple Development"
-    DEVELOPMENT_TEAM: TEAMID_REDACTED
+    # DEVELOPMENT_TEAM is NOT set here on purpose — see Config/Signing.xcconfig.
 targets:
   iPrompter:
     type: application
     supportedDestinations: [iOS, macOS]
+    configFiles:
+      Debug: Config/Signing.xcconfig
+      Release: Config/Signing.xcconfig
     sources:
       - path: iPrompter
         type: syncedFolder

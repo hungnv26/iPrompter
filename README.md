@@ -19,6 +19,22 @@ iPrompter is a distraction-free native teleprompter for presenters using iPad or
 - **macOS deployment:** macOS 14 or later
 - **Project generation:** iPrompter is generated from `project.yml` using XcodeGen. The `iPrompter.xcodeproj` file is generated; never edit it directly. Instead, add or remove Swift files under `iPrompter/` or `iPrompterTests/` folders, and Xcode automatically picks them up via synchronized folders.
 
+### Signing (only needed to run on a physical device)
+
+Simulator and macOS builds use ad-hoc signing and need no setup. To install on a
+real iPad, supply your own Apple Developer Team ID — it is intentionally not in
+this repo, since it identifies a specific developer account:
+
+```bash
+cp Config/Signing.local.xcconfig.example Config/Signing.local.xcconfig
+# then edit it: DEVELOPMENT_TEAM = YOURTEAMID
+```
+
+`Config/Signing.local.xcconfig` is gitignored and pulled in automatically by
+`Config/Signing.xcconfig`. Alternatively pass `DEVELOPMENT_TEAM=YOURTEAMID` on
+the `xcodebuild` command line, or just select your team in Xcode under
+**Signing & Capabilities**.
+
 ## Build and Run
 
 Run these from the repo root:
