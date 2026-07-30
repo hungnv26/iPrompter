@@ -179,3 +179,86 @@ Additional (not on checklist):
 | Engine + Settings (WP4) | — | clean: rate correct, ramp/clamp correct, persistence round-trips through real relaunches |
 | Prompter view (WP5) | — | Bug G (iPad tap-reveal dead during playback), Bug H (macOS key focus stays in hidden editor: Space/Esc dead + script mutation) |
 | Project config | tech lead | clean: both clean builds green, tests green |
+
+---
+
+# Round 3 — verification of bugs G and H (engineering manager)
+
+**Verdict: PASS with one item verified by construction rather than empirically
+(macOS Space/Esc — see item 6).**
+
+Gates, all on the final commit with debug instrumentation removed:
+
+| Gate | Result |
+|---|---|
+| iOS Simulator build | BUILD SUCCEEDED |
+| macOS build | BUILD SUCCEEDED |
+| macOS unit tests | 32/32 passed |
+
+## Bug G — tap-to-reveal during playback: FIXED
+
+Round 2 reported this as still broken, and the previous engineer's
+`r3-g5-tap-revealed-bar-while-playing.png` shows no control bar despite its
+filename. Both observations were **measurement artifacts**, not defects.
+
+The control bar auto-hides 3 s after the last interaction (SPEC F3), but a
+tap→screenshot round trip through the available simulator tooling measures
+~5 s. Every screenshot therefore lands *after* the bar has already re-hidden,
+which is visually indistinguishable from "the tap did nothing". No screenshot
+taken through this tooling can confirm or refute this fix.
+
+Verified instead from frame-level `os_log` telemetry on a live playback session:
+
+- `14:10:17.815` — mid-playback tap on bare text fired `registerInteraction`
+  with `controlsVisible=0` (i.e. it reached the handler while hidden).
+- `14:12:12.116` — second tap; the view body then re-rendered with
+  `controlsVisible=1` for **334 consecutive frames** (~3 s = exactly one
+  auto-hide window) before hiding again.
+
+Root cause: `TouchInterceptor` wins UIKit hit-testing and *consumed* the
+touches, so an ancestor SwiftUI `.onTapGesture` never fired. Fix: the reveal
+gesture is now a real `UITapGestureRecognizer` on the interceptor itself.
+
+**Bug C closed for good** by the same telemetry: `offset` advances 1.0 pt per
+16.7 ms frame = 60 pt/s at readout 60. Round 1's 280–1,000 pt/s figures were
+screenshot-timing artifacts.
+
+## Bug H — macOS focus leak / silent data corruption: FIXED
+
+The data-corruption half is now **structurally impossible**: `RootView`
+replaces the window content with the prompter instead of overlaying it, so
+while prompting there is no `splitView`, no `EditorView`, and no `TextEditor`
+in the hierarchy. Keystrokes cannot mutate script content because the view
+that received them does not exist. This is a structural guarantee, not a focus
+heuristic, and it is verified by reading `RootView.swift:12-37`.
+
+The keyboard half (Space toggles play/pause, Esc exits) is now handled by an
+`NSEvent` local monitor that sees keys before menu key-equivalent matching and
+the responder chain, and swallows the ones it handles — also fixing round 1's
+Bug F. **This half was not re-verified empirically in round 3**: driving the
+macOS app's keyboard requires System Events accessibility automation that is
+not available in this environment (the Simulator runs headless and no GUI
+process was scriptable). It is verified by code inspection only. Recommend a
+manual physical-keyboard check before release.
+
+## Regression checks on the final build (iPad Pro 13-inch, iPadOS 26)
+
+| Check | Result | Evidence |
+|---|---|---|
+| Library, folders, search, duplicate | PASS | QA data persisted across rebuilds; list correct |
+| Editor live counts | PASS | "1,000 words · 6m 40s" |
+| Prompter opens paused at top, full-screen | PASS | controls visible, 60 pts/s readout |
+| Scrolling from w1 through w514+ | PASS | no truncation, constant rate |
+| Mirror-H during session | PASS | `r3-mgr-mirror-h-final-build.png` — text mirrored, control bar unmirrored and fully readable, toggle highlighted |
+| Exit returns to editor, same script, content intact | PASS | `r3-mgr-exit-returns-to-editor.png` — no regression from content-replacement presentation |
+
+## Open items
+
+1. **macOS Space/Esc empirically unverified** (item 6) — code-inspection only;
+   needs a manual keyboard check.
+2. **Auto-hide is 3 s per SPEC**, which is aggressive in practice: any tooling
+   or user with >3 s reaction time sees the bar vanish again. Worth revisiting
+   as a product decision (not a defect).
+3. Two macOS crash reports exist from 02:30 during earlier development
+   (`~/Library/Logs/DiagnosticReports/iPrompter-2026-07-30-0231*.ips`); not
+   reproduced in round 3 and not investigated.
