@@ -33,8 +33,10 @@ struct EditorView: View {
         }
         .padding(.horizontal, 24)
         .padding(.top, 16)
-        .frame(maxWidth: 760)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Fill the whole detail pane. An earlier fixed 760 pt cap centred the
+        // text and left large dead margins on a wide Mac window, so the editor
+        // is responsive to whatever width the split view gives it.
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .navigationTitle(script.title)
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
