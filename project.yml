@@ -12,8 +12,11 @@ settings:
     SWIFT_VERSION: "5.0"
     GENERATE_INFOPLIST_FILE: YES
     CODE_SIGN_STYLE: Automatic
+    # Device builds need a real Apple Development identity; macOS keeps ad-hoc
+    # signing so local Mac builds/tests need no provisioning round trip.
     CODE_SIGN_IDENTITY: "-"
-    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_IDENTITY[sdk=iphoneos*]: "Apple Development"
+    DEVELOPMENT_TEAM: TEAMID_REDACTED
 targets:
   iPrompter:
     type: application
