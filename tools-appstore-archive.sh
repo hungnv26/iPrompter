@@ -68,7 +68,11 @@ if plutil -p "$APP/Info.plist" | grep -q ITSAppUsesNonExemptEncryption; then
 else
   echo "    export compliance: not declared (you'll be asked on every upload)" >&2
 fi
-echo "    signed by: $(codesign -dvv "$APP" 2>&1 | sed -n 's/^Authority=//p' | head -1)"
+# NOTE: the archive itself is Development-signed — project.yml pins
+# CODE_SIGN_IDENTITY[sdk=iphoneos*] to "Apple Development". exportArchive
+# re-signs for distribution, so the signature that matters is the one in the
+# exported .ipa, verified after the export below. Do not be alarmed by
+# "Apple Development" here.
 
 # ExportOptions is generated into the output dir, never committed: it carries
 # the team id.
@@ -101,6 +105,29 @@ xcodebuild -exportArchive -archivePath "$ARCHIVE" \
 
 IPA="$(find "$OUT" -maxdepth 1 -name '*.ipa' | head -1)"
 [ -n "$IPA" ] || { echo "no .ipa produced" >&2; exit 1; }
+
+# The signature that actually matters: App Store Connect rejects anything not
+# signed by an Apple Distribution certificate with an App Store profile.
+echo "==> Verifying the exported .ipa"
+VERIFY_DIR="$(mktemp -d)"
+unzip -q "$IPA" -d "$VERIFY_DIR"
+SIGNER="$(codesign -dvv "$VERIFY_DIR/Payload/iPrompter.app" 2>&1 \
+  | sed -n 's/^Authority=//p' | head -1)"
+echo "    signed by: $SIGNER"
+case "$SIGNER" in
+  "Apple Distribution"*)
+    echo "    OK — distribution signed" ;;
+  *)
+    echo "    PROBLEM: not distribution-signed. App Store Connect will reject" >&2
+    echo "    this at upload validation. Check that your team has an Apple" >&2
+    echo "    Distribution certificate and that Xcode is signed in." >&2 ;;
+esac
+if [ -f "$VERIFY_DIR/Payload/iPrompter.app/PrivacyInfo.xcprivacy" ]; then
+  echo "    privacy manifest: present in .ipa"
+else
+  echo "    privacy manifest: MISSING from .ipa — expect ITMS-91053" >&2
+fi
+rm -rf "$VERIFY_DIR"
 
 echo
 echo "==> Done: $(du -h "$IPA" | cut -f1)  $IPA"
