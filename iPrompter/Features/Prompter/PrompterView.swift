@@ -17,12 +17,11 @@ struct PrompterView: View {
 
     @State private var engine = PrompterEngine(clock: DisplayLinkClock())
     @State private var settingsStore = SettingsStore()
-    @State private var controlsVisible = true
     @State private var showSettings = false
-    /// Mutated on every interaction WITHOUT invalidating the view (it is a
-    /// class whose changes SwiftUI does not observe) — mouse-move events on
-    /// macOS would otherwise re-evaluate the body continuously.
-    @State private var interaction = InteractionTracker()
+    /// Control-bar visibility + interaction timestamp, held in a REFERENCE type
+    /// (see `ControlsPresentation`) so the interceptor's tap callback can never
+    /// write into a stale copy of this struct.
+    @State private var controls = ControlsPresentation()
 
     /// SPEC F3: controls auto-hide after 3 s of inactivity during playback.
     private static let autoHideDelay: TimeInterval = 3
@@ -71,20 +70,15 @@ struct PrompterView: View {
                 keyboardShortcutButtons
                 #endif
 
-                // QA Bug G (part 2): the bar must NOT be shown by inserting it
-                // with `if controlsVisible` + .transition — during playback the
-                // engine invalidates this body every frame, and the per-frame
-                // no-animation transactions kept restarting the insertion
-                // transition from its inactive state, so the bar stayed at
-                // ~opacity 0: invisible AND skipped by hit-testing (verified
-                // live: body rendered with controlsVisible == true for 300+
-                // frames while the screen showed no bar and taps at the bar's
-                // location hit the interceptor). Auto-hide worked because a
-                // REMOVED view is no longer rebuilt per frame. The bar is
-                // therefore always in the hierarchy, and visibility is a
-                // resting attribute of the body (opacity/offset), which
-                // per-frame re-evaluation can only ever drive TOWARD the
-                // correct value. .animation(value:) animates just the flips.
+                // QA Bug G (part 2): the bar stays in the hierarchy at all
+                // times and visibility is a resting attribute of the body
+                // (opacity/offset/hit-testing) rather than an `if` + insertion
+                // transition, which per-frame invalidation kept restarting
+                // from its inactive state. That alone was NOT enough — the bar
+                // still never painted while `controls.visible` was true, until
+                // the per-frame `engine.offset` read was moved out of this body
+                // (see `ScrollingText`). Keep both: this view must not be
+                // re-evaluated every frame during playback.
                 PrompterControlsView(
                     engine: engine,
                     store: settingsStore,
@@ -93,11 +87,11 @@ struct PrompterView: View {
                 )
                 .padding(.horizontal, 24)
                 .padding(.bottom, 20)
-                .opacity(controlsVisible ? 1 : 0)
-                .offset(y: controlsVisible ? 0 : 24)
-                .allowsHitTesting(controlsVisible)
-                .accessibilityHidden(!controlsVisible)
-                .animation(.easeOut(duration: 0.2), value: controlsVisible)
+                .opacity(controls.visible ? 1 : 0)
+                .offset(y: controls.visible ? 0 : 24)
+                .allowsHitTesting(controls.visible)
+                .accessibilityHidden(!controls.visible)
+                .animation(.easeOut(duration: 0.2), value: controls.visible)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
@@ -125,29 +119,12 @@ struct PrompterView: View {
     // MARK: Reading container (the ONLY thing that gets mirrored)
 
     private func readingContainer(size: CGSize) -> some View {
-        PrompterTextBlock(
+        ScrollingText(
+            engine: engine,
             content: script.content,
             settings: settingsStore.settings,
-            viewportWidth: size.width
+            size: size
         )
-        .equatable() // Text is laid out once; scrolling is translation only.
-        // QA Bug A: the viewport frame below proposes a FINITE height, which
-        // makes Text truncate with an ellipsis after ~1.5 screens. fixedSize
-        // re-proposes nil height so the block always lays out at its full
-        // natural height inside the clipped viewport.
-        .fixedSize(horizontal: false, vertical: true)
-        // QA Bug B (no auto-stop): the WP5 preference-key measurement was
-        // never delivered on iPadOS 26 (engine.contentHeight stayed 0, which
-        // disables auto-stop, so playback scrolled forever into black).
-        // onGeometryChange reports the laid-out height reliably.
-        .onGeometryChange(for: Double.self) { proxy in
-            proxy.size.height
-        } action: { height in
-            engine.contentHeight = height
-        }
-        .offset(y: -engine.offset)
-        .frame(width: size.width, height: size.height, alignment: .top)
-        .clipped()
         .mirrorTransforms(settingsStore.settings)
         .allowsHitTesting(false)
     }
@@ -220,19 +197,13 @@ struct PrompterView: View {
     // control bar animates them (withAnimation-driven transitions proved
     // unreliable under the per-frame playback invalidation — see Bug G note).
     private func registerInteraction() {
-        interaction.lastInteraction = .now
-        if !controlsVisible {
-            controlsVisible = true
-        }
+        controls.registerInteraction()
     }
 
     private func autoHideIfIdle() {
-        guard engine.state == .playing,
-              controlsVisible,
-              !showSettings,
-              Date.now.timeIntervalSince(interaction.lastInteraction) >= Self.autoHideDelay
-        else { return }
-        controlsVisible = false
+        controls.hideIfIdle(isPlaying: engine.state == .playing,
+                            settingsOpen: showSettings,
+                            after: Self.autoHideDelay)
     }
 
     // MARK: Exit
@@ -243,10 +214,89 @@ struct PrompterView: View {
     }
 }
 
-/// Reference-type timestamp holder so interaction tracking never triggers a
-/// SwiftUI view invalidation (see `PrompterView.interaction`).
-private final class InteractionTracker {
-    var lastInteraction: Date = .now
+/// The scrolling text, isolated in its OWN view so that the per-frame
+/// `engine.offset` read invalidates ONLY this subview.
+///
+/// QA Bug G (part 2), the real fix: `offset(y: -engine.offset)` used to be
+/// built inside `PrompterView.body`, which registered the WHOLE body as an
+/// observer of `engine.offset`. During playback that re-evaluated the entire
+/// body ~60x per second, and the control bar's `.animation(value:)` opacity
+/// could never advance across those back-to-back invalidations — so revealing
+/// the bar set `controlsVisible = true` (verified in logs: true for a full 3 s,
+/// hit-testing enabled) while the screen still showed nothing. Auto-stop
+/// appeared to "work" only because the clock stops there and invalidation
+/// ceases. Confining the offset read here keeps the parent body stable during
+/// playback, so the reveal animation renders normally.
+private struct ScrollingText: View {
+    let engine: PrompterEngine
+    let content: String
+    let settings: ReadingSettings
+    let size: CGSize
+
+    var body: some View {
+        PrompterTextBlock(
+            content: content,
+            settings: settings,
+            viewportWidth: size.width
+        )
+        .equatable() // Text is laid out once; scrolling is translation only.
+        // QA Bug A: the viewport frame below proposes a FINITE height, which
+        // makes Text truncate with an ellipsis after ~1.5 screens. fixedSize
+        // re-proposes nil height so the block always lays out at its full
+        // natural height inside the clipped viewport.
+        .fixedSize(horizontal: false, vertical: true)
+        // QA Bug B (no auto-stop): the WP5 preference-key measurement was
+        // never delivered on iPadOS 26 (engine.contentHeight stayed 0, which
+        // disables auto-stop, so playback scrolled forever into black).
+        // onGeometryChange reports the laid-out height reliably.
+        .onGeometryChange(for: Double.self) { proxy in
+            proxy.size.height
+        } action: { height in
+            engine.contentHeight = height
+        }
+        .offset(y: -engine.offset)
+        .frame(width: size.width, height: size.height, alignment: .top)
+        .clipped()
+    }
+}
+
+/// Control-overlay visibility and the last-interaction timestamp, in a
+/// REFERENCE type held by `PrompterView` as `@State`.
+///
+/// QA Bug G (part 3): visibility used to be a plain `@State Bool` on the view
+/// struct, written by the interceptor's `onTap` closure. That closure captures
+/// the PrompterView VALUE from whichever body evaluation created it, so the
+/// write landed in a stale copy and was silently lost — the tap updated
+/// `lastInteraction` (a class, shared by reference) while `controlsVisible`
+/// never flipped. It only appeared to work during playback because the body
+/// was being re-evaluated ~60x/s, which refreshed the coordinator's closure
+/// constantly; once that per-frame churn was removed (see `ScrollingText`) the
+/// staleness became permanent. Holding the flag on a stable reference removes
+/// the failure mode entirely.
+@Observable
+private final class ControlsPresentation {
+    /// Observed: drives the control bar's opacity, offset and hit-testing.
+    var visible = true
+
+    /// NOT observed: mutated on every interaction — including macOS mouse-move
+    /// — and must never invalidate the view.
+    @ObservationIgnored var lastInteraction: Date = .now
+
+    /// Records an interaction and reveals the bar if it is hidden.
+    func registerInteraction() {
+        lastInteraction = .now
+        if !visible {
+            visible = true
+        }
+    }
+
+    /// SPEC F3: hide the bar after `delay` of inactivity during playback.
+    func hideIfIdle(isPlaying: Bool, settingsOpen: Bool, after delay: TimeInterval) {
+        guard isPlaying, visible, !settingsOpen,
+              Date.now.timeIntervalSince(lastInteraction) >= delay
+        else { return }
+        visible = false
+    }
 }
 
 /// Empty platform view giving the prompter overlay a REAL hit-testable
