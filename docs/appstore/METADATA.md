@@ -95,6 +95,7 @@ not be asked at upload time.
 1. `01-prompter-reading.png` — the reading view, mid-script, controls visible
 2. `02-library-editor.png` — sidebar, script list and editor with live counts
 3. `03-mirror-mode.png` — mirrored text with the controls still readable
+4. `04-reading-settings.png` — the reading-settings panel over a live script
 
 Apple accepts 1–10 per size class. If you add more, keep them all the same
 orientation.
@@ -106,10 +107,11 @@ orientation.
 > "Start Prompter", then press play. Tap anywhere to bring the controls back
 > while it scrolls.
 
-## Known gap before you ship
+## Before you ship
 
-The reading-settings panel (gear icon in the prompter) renders poorly on
-current iPadOS: its material is very translucent so the scrolling text shows
-through the labels, and the Size/Spacing sliders lay out above their labels
-rather than beside them. It works, but it looks unfinished — worth fixing
-before launch, and worth keeping out of the screenshots until it is.
+Nothing outstanding in the app itself. The reading-settings panel was rebuilt
+(opaque backdrop, captioned slider rows) and is in screenshot 4.
+
+What is left is all account-side: register the bundle id, create the App Store
+Connect record, host the privacy policy and paste its URL in, then upload a
+build with `tools-appstore-archive.sh`.
