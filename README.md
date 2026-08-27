@@ -135,7 +135,7 @@ All shortcuts work on both iPad (with hardware keyboard) and macOS:
 
 The production frame clock (`DisplayLinkClock`) wraps CADisplayLink on iOS and NSScreen.displayLink (macOS 14+) for 60 FPS rendering. Tests use a manual clock to verify ramp timing and speed clamping deterministically.
 
-**Settings Persistence:** A single `ReadingSettings` struct (font, size, spacing, margins, colors, mirror/flip/rotation, speed) is encoded to JSON and stored in `@AppStorage`, keyed by color ID strings to survive palette changes.
+**Settings Persistence:** A single `ReadingSettings` struct (font, size, spacing, margins, colors, mirror/flip/rotation, speed) is encoded to JSON and stored by `SettingsStore` in `UserDefaults` under the single `"readingSettings"` key, keyed by color ID strings to survive palette changes.
 
 ## Project Structure
 
@@ -174,14 +174,15 @@ iPrompter/
       ReadingTimeFormatter.swift "Xm Ys" format helper (e.g., "4m 30s")
 
     Prompter/            Full-screen reading view (WP5)
-      PrompterView.swift         Main prompter UI, auto-hide controls, gestures
+      PrompterView.swift         Main prompter UI, auto-hide controls, gestures,
+                                 plus TouchInterceptor (platform view for
+                                 hit-testing and macOS key handling)
       PrompterTextBlock.swift    Chunked text rendering (24 lines per chunk)
       MirrorContainer.swift      Mirror/flip/rotation transforms on text only
       PrompterControlsView.swift Play/Pause, Stop, speed slider, ±/readout, gear
       PrompterSettingsSheet.swift Font/color/spacing/mirror settings popup
       DisplayLinkClock.swift     CADisplayLink (iOS) / NSScreen.displayLink (macOS)
       PrompterCommands.swift     macOS Playback menu commands
-      TouchInterceptor.swift     Platform view for hit-testing and key handling
       PresetColor+Color.swift    Color palette integration
 
 iPrompterTests/
