@@ -22,7 +22,15 @@ struct PrompterSettingsSheet: View {
                     }
                 }
         }
-        .presentationDetents([.medium, .large])
+        // .medium showed barely two rows of a four-section form on iPad, so the
+        // panel opened looking truncated. A taller default fits Font end-to-end
+        // with Colors just below; drag up for the rest.
+        .presentationDetents([.fraction(0.68), .large])
+        // The prompter behind this sheet is full-screen scrolling text. The
+        // default sheet backdrop is translucent enough that the text showed
+        // straight through the labels and made them hard to read, so the
+        // backdrop is opaque.
+        .presentationBackground(Color(.systemGroupedBackground))
         #else
         settingsForm
             .frame(width: 380, height: 540)
@@ -38,35 +46,23 @@ struct PrompterSettingsSheet: View {
                     }
                 }
 
-                LabeledContent("Size") {
-                    Slider(value: $store.settings.fontSize,
-                           in: ReadingSettings.fontSizeRange,
-                           step: 1)
-                    Text("\(Int(store.settings.fontSize)) pt")
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                        .frame(width: 52, alignment: .trailing)
-                }
+                sliderRow("Size",
+                          value: $store.settings.fontSize,
+                          in: ReadingSettings.fontSizeRange,
+                          step: 1,
+                          readout: "\(Int(store.settings.fontSize)) pt")
 
-                LabeledContent("Spacing") {
-                    Slider(value: $store.settings.lineSpacing,
-                           in: ReadingSettings.lineSpacingRange,
-                           step: 0.05)
-                    Text(String(format: "×%.2f", store.settings.lineSpacing))
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                        .frame(width: 52, alignment: .trailing)
-                }
+                sliderRow("Spacing",
+                          value: $store.settings.lineSpacing,
+                          in: ReadingSettings.lineSpacingRange,
+                          step: 0.05,
+                          readout: String(format: "×%.2f", store.settings.lineSpacing))
 
-                LabeledContent("Margins") {
-                    Slider(value: $store.settings.marginFraction,
-                           in: ReadingSettings.marginFractionRange,
-                           step: 0.01)
-                    Text("\(Int((store.settings.marginFraction * 100).rounded())) %")
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                        .frame(width: 52, alignment: .trailing)
-                }
+                sliderRow("Margins",
+                          value: $store.settings.marginFraction,
+                          in: ReadingSettings.marginFractionRange,
+                          step: 0.01,
+                          readout: "\(Int((store.settings.marginFraction * 100).rounded())) %")
             }
 
             Section("Colors") {
@@ -86,6 +82,35 @@ struct PrompterSettingsSheet: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    // MARK: Slider rows
+
+    /// Label and value on one line, slider beneath.
+    ///
+    /// `LabeledContent` with a Slider in its content closure does not survive
+    /// the narrow width this panel gets: the slider claimed the whole row and
+    /// pushed the label and readout onto their own lines, so the panel read as
+    /// a stack of unlabelled sliders. Laying it out explicitly keeps every
+    /// control captioned at any width, on both platforms.
+    private func sliderRow(_ title: String,
+                           value: Binding<Double>,
+                           in range: ClosedRange<Double>,
+                           step: Double,
+                           readout: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(title)
+                Spacer(minLength: 12)
+                Text(readout)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+            }
+            Slider(value: value, in: range, step: step)
+                .accessibilityLabel(title)
+                .accessibilityValue(readout)
+        }
+        .padding(.vertical, 2)
     }
 
     // MARK: Swatches (8 fixed presets, no custom picker — SPEC F3)
