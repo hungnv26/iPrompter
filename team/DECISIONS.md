@@ -60,10 +60,10 @@ Append-only. Record decisions made where SPEC/PLAN was ambiguous.
   never instantly stops before the view has measured the text.
 - **Project-config bug (tech-lead action needed, WP4 could not fix):** the
   generated pbxproj hardcodes iOS-style
-  `TEST_HOST = $(BUILT_PRODUCTS_DIR)/iPrompter.app/iPrompter`, which fails on
+  `TEST_HOST = $(BUILT_PRODUCTS_DIR)/eTeleprompter.app/eTeleprompter`, which fails on
   the macOS destination (executable lives in `Contents/MacOS/`). WP4 owns no
   project files, so tests are run with a CLI override:
-  `xcodebuild … test CODE_SIGNING_ALLOWED=NO 'TEST_HOST=$(BUILT_PRODUCTS_DIR)/iPrompter.app/Contents/MacOS/iPrompter'`.
+  `xcodebuild … test CODE_SIGNING_ALLOWED=NO 'TEST_HOST=$(BUILT_PRODUCTS_DIR)/eTeleprompter.app/Contents/MacOS/eTeleprompter'`.
   Proper fix in project.yml: set the tests target's TEST_HOST per-platform or
   use `$(BUNDLE_EXECUTABLE_FOLDER_PATH)`.
 

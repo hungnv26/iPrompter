@@ -1,4 +1,4 @@
-# iPrompter — QA Report (MVP acceptance)
+# eTeleprompter — QA Report (MVP acceptance)
 
 **Verdict: FAIL — Round 2 (2026-07-30): 2 bugs.** Item 6 fails: Space still does not toggle play/pause on macOS (Bug F not fixed) — worse, Space and other typing keys are delivered to the hidden editor underneath the prompter and silently modify the script content (new Bug H). On iPad, tap-anywhere-to-reveal-controls does not work during playback, so the user cannot pause/stop/exit mid-playback until auto-stop (new Bug G, residue of Bug B). Everything else is fixed: items 1–5, 7 and 8 pass; bugs A, C, D, E are confirmed fixed. See "Round 2" section below.
 
@@ -35,7 +35,7 @@ Additional (not on checklist):
 ## Bugs
 
 ### Bug A — Prompter renders only the first ~1.5 screens of a script; rest is truncated with an ellipsis
-- **Area:** Prompter view (WP5) — `iPrompter/Features/Prompter/PrompterView.swift` / `PrompterTextBlock.swift`
+- **Area:** Prompter view (WP5) — `eTeleprompter/Features/Prompter/PrompterView.swift` / `PrompterTextBlock.swift`
 - **Repro:** Create a script with 1,000 words (single paragraph, no newlines). Open the prompter. Look at the bottom of the laid-out text (scroll there by playing, or see screenshots 09/10 where the block ends "w130 w131 w132 w133 w134 w135 w1…" followed by empty black).
 - **Expected:** Full script laid out; playback scrolls through all 1,000 words (SPEC item 7).
 - **Actual:** The text block is truncated with a tail ellipsis after roughly 1.5 viewport heights (~17 wrapped lines at 48 pt on iPad Pro 13"). Words ~136–1000 never render anywhere. Reproduced on macOS as well (text vanished long before 1,000 words could have scrolled).
@@ -85,7 +85,7 @@ Additional (not on checklist):
 - "No visible stutter" (item 7) could not be judged: playback is grossly mistimed (Bug C) and blacks out (Bug B), so a jitter assessment is meaningless until those are fixed.
 - Pause-retains-position and Stop-resets-to-top could not be reached: every attempt to pause during playback hit the black screen first (26, 27 are both fully black).
 - Font size / colors "apply live" and their relaunch persistence were not verifiable through the UI on iPad (Bug D blocks the settings sheet). The `SettingsStore` round-trip is covered by the 10 passing ReadingSettings unit tests, and mirror-H + speed were proven to persist across a real relaunch (25).
-- The macOS screen-recording permission dialog that appeared mid-run belongs to the QA tooling's screencapture, not to iPrompter; it was left unanswered (no system settings were changed) and does not affect any finding.
+- The macOS screen-recording permission dialog that appeared mid-run belongs to the QA tooling's screencapture, not to eTeleprompter; it was left unanswered (no system settings were changed) and does not affect any finding.
 
 ## Feature-area summary for fixes
 
@@ -260,5 +260,5 @@ manual physical-keyboard check before release.
    or user with >3 s reaction time sees the bar vanish again. Worth revisiting
    as a product decision (not a defect).
 3. Two macOS crash reports exist from 02:30 during earlier development
-   (`~/Library/Logs/DiagnosticReports/iPrompter-2026-07-30-0231*.ips`); not
+   (`~/Library/Logs/DiagnosticReports/eTeleprompter-2026-07-30-0231*.ips`); not
    reproduced in round 3 and not investigated.

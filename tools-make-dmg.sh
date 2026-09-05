@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build a distributable macOS .dmg for iPrompter.
+# Build a distributable macOS .dmg for eTeleprompter.
 #
 # Usage:  ./tools-make-dmg.sh [output.dmg]
 #
@@ -17,19 +17,19 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
-OUT="${1:-$HOME/Downloads/iPrompter-1.0.dmg}"
-VOLNAME="iPrompter 1.0"
+OUT="${1:-$HOME/Downloads/eTeleprompter-1.0.dmg}"
+VOLNAME="eTeleprompter 1.0"
 DD="$(mktemp -d)/dd"
 STAGE="$(mktemp -d)/stage"
 trap 'rm -rf "$(dirname "$DD")" "$(dirname "$STAGE")"' EXIT
 
 echo "==> Building Release (universal)"
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'platform=macOS' -configuration Release \
   -derivedDataPath "$DD" build CODE_SIGNING_ALLOWED=NO \
   | grep -E "BUILD (SUCCEEDED|FAILED)|error:" || true
 
-APP="$DD/Build/Products/Release/iPrompter.app"
+APP="$DD/Build/Products/Release/eTeleprompter.app"
 [ -d "$APP" ] || { echo "Build produced no app bundle" >&2; exit 1; }
 
 echo "==> Signing"
@@ -52,17 +52,17 @@ mkdir -p "$STAGE"
 cp -R "$APP" "$STAGE/"
 ln -s /Applications "$STAGE/Applications"
 cat > "$STAGE/Read Me.txt" <<'TXT'
-iPrompter 1.0
+eTeleprompter 1.0
 =============
 
-To install: drag iPrompter to the Applications folder in this window.
+To install: drag eTeleprompter to the Applications folder in this window.
 
 First launch
 ------------
 If this build is not Developer ID signed and notarized, macOS Gatekeeper will
 warn you the first time you open it. To proceed:
 
-  Right-click (or Control-click) iPrompter in Applications, choose "Open",
+  Right-click (or Control-click) eTeleprompter in Applications, choose "Open",
   then confirm.
 
 You only need to do this once. If macOS blocks it outright, open

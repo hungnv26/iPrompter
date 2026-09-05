@@ -39,7 +39,7 @@ struct SidebarView: View {
                 }
             }
         }
-        .navigationTitle("iPrompter")
+        .navigationTitle("eTeleprompter")
         .safeAreaInset(edge: .bottom, alignment: .leading) {
             newFolderButton
         }

@@ -1,23 +1,23 @@
-# iPrompter
+# eTeleprompter
 
-iPrompter is a distraction-free native teleprompter for presenters using iPad or macOS. Mount an iPad on a mirror-rig or read directly from a Mac screen, then open a script and scroll it at a steady, controllable speed while reading aloud. The app is fast, minimal, and works entirely offline with no accounts or cloud services.
+eTeleprompter is a distraction-free native teleprompter for presenters using iPad or macOS. Mount an iPad on a mirror-rig or read directly from a Mac screen, then open a script and scroll it at a steady, controllable speed while reading aloud. The app is fast, minimal, and works entirely offline with no accounts or cloud services.
 
 ## Screenshots
 
 **Reading view** — full-screen, distraction-free, scrolling at a constant 60 pts/s. The control bar auto-hides after 3 seconds of inactivity and reappears on tap, so nothing sits between you and the script while you present.
 
-![iPrompter reading view on iPad, scrolling a script with the transport controls showing speed at 60 pts/s](docs/screenshots/prompter-reading-view.png)
+![eTeleprompter reading view on iPad, scrolling a script with the transport controls showing speed at 60 pts/s](docs/screenshots/prompter-reading-view.png)
 
 **Script library** — folders in the sidebar, scripts in the middle sorted by most recently modified, and the editor on the right with live word count and estimated reading time. Every edit auto-saves; there is no Save button.
 
-![iPrompter script library on iPad, showing the folder sidebar, script list, and editor with a 328-word script](docs/screenshots/script-library.png)
+![eTeleprompter script library on iPad, showing the folder sidebar, script list, and editor with a 328-word script](docs/screenshots/script-library.png)
 
 ## Requirements
 
 - **Xcode 26 or later**
 - **iOS deployment:** iPadOS 17 or later
 - **macOS deployment:** macOS 14 or later
-- **Project generation:** iPrompter is generated from `project.yml` using XcodeGen. The `iPrompter.xcodeproj` file is generated; never edit it directly. Instead, add or remove Swift files under `iPrompter/` or `iPrompterTests/` folders, and Xcode automatically picks them up via synchronized folders.
+- **Project generation:** eTeleprompter is generated from `project.yml` using XcodeGen. The `eTeleprompter.xcodeproj` file is generated; never edit it directly. Instead, add or remove Swift files under `eTeleprompter/` or `eTeleprompterTests/` folders, and Xcode automatically picks them up via synchronized folders.
 
 ### Signing (only needed to run on a physical device)
 
@@ -41,13 +41,13 @@ Run these from the repo root:
 
 ### Build for iPad Simulator
 ```bash
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
 ```
 
 ### Build for macOS
 ```bash
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'platform=macOS' build CODE_SIGNING_ALLOWED=NO
 ```
 
@@ -58,7 +58,7 @@ xcrun simctl boot "iPad Pro 13-inch (M4)" || true
 open -a Simulator
 
 # Build and install
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M4)' \
   build CODE_SIGNING_ALLOWED=NO
 
@@ -69,16 +69,16 @@ xcrun simctl launch booted com.iprompter.iPrompter
 ### Run on macOS (interactive)
 ```bash
 # Build with ad-hoc signing so it launches
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'platform=macOS' build
 
 # Launch the app
-open ~/Library/Developer/Xcode/DerivedData/iPrompter-*/Build/Products/Debug/iPrompter.app
+open ~/Library/Developer/Xcode/DerivedData/eTeleprompter-*/Build/Products/Debug/eTeleprompter.app
 ```
 
 ### Unit Tests
 ```bash
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'platform=macOS' test CODE_SIGNING_ALLOWED=NO
 ```
 
@@ -140,9 +140,9 @@ The production frame clock (`DisplayLinkClock`) wraps CADisplayLink on iOS and N
 ## Project Structure
 
 ```
-iPrompter/
+eTeleprompter/
   App/                   Entry point, root navigation, app state
-    iPrompterApp.swift   Main app, scene, model container, menu commands
+    eTeleprompterApp.swift   Main app, scene, model container, menu commands
     RootView.swift       Navigation shell (sidebar/list/editor + prompter overlay)
     AppState.swift       Observable state for prompter presentation
     SidebarItem.swift    Enum for sidebar selection (all scripts or folder)
@@ -185,12 +185,12 @@ iPrompter/
       PrompterCommands.swift     macOS Playback menu commands
       PresetColor+Color.swift    Color palette integration
 
-iPrompterTests/
+eTeleprompterTests/
   PrompterEngineTests.swift  22 unit tests: state machine, speed clamping, ramping, auto-stop
   ReadingSettingsTests.swift 10 unit tests: settings encoding/decoding, persistence
 ```
 
-All files under `iPrompter/` and `iPrompterTests/` are automatically tracked by Xcode (synchronized folders); there is no need to manually add them to the project.
+All files under `eTeleprompter/` and `eTeleprompterTests/` are automatically tracked by Xcode (synchronized folders); there is no need to manually add them to the project.
 
 ## Testing
 
@@ -204,7 +204,7 @@ The app includes **32 unit tests** covering:
 
 Run with:
 ```bash
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'platform=macOS' test CODE_SIGNING_ALLOWED=NO
 ```
 

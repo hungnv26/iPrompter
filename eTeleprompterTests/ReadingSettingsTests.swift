@@ -1,5 +1,5 @@
 import XCTest
-@testable import iPrompter
+@testable import eTeleprompter
 
 /// Unit tests for ReadingSettings, PresetPalette, and SettingsStore (WP4).
 final class ReadingSettingsTests: XCTestCase {
@@ -74,7 +74,7 @@ final class ReadingSettingsTests: XCTestCase {
     // MARK: SettingsStore persistence
 
     private func makeSuite(_ name: String = #function) -> UserDefaults {
-        let suiteName = "iPrompterTests.\(name)"
+        let suiteName = "eTeleprompterTests.\(name)"
         let defaults = UserDefaults(suiteName: suiteName)!
         defaults.removePersistentDomain(forName: suiteName)
         return defaults

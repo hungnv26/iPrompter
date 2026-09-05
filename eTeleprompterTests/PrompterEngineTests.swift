@@ -1,5 +1,5 @@
 import XCTest
-@testable import iPrompter
+@testable import eTeleprompter
 
 /// Manual clock for tests: records start/stop and advances the engine by
 /// fixed deltas, exactly as a display link would.

@@ -1,4 +1,4 @@
-# App Store Connect listing — iPrompter 1.0
+# App Store Connect listing — eTeleprompter 1.0
 
 Draft copy for the App Store Connect fields. Nothing here is submitted
 automatically; paste what you want into App Store Connect yourself.
@@ -7,7 +7,7 @@ automatically; paste what you want into App Store Connect yourself.
 
 | Field | Value |
 |---|---|
-| Name (30 char max) | `iPrompter — Teleprompter` (24) |
+| Name (30 char max) | `eTeleprompter — Teleprompter` (24) |
 | Subtitle (30 char max) | `Read your script, on cue` (24) |
 | Bundle ID | `com.iprompter.iPrompter` — must be registered to your team first |
 | Primary category | Productivity |
@@ -23,7 +23,7 @@ automatically; paste what you want into App Store Connect yourself.
 
 ## Description
 
-> iPrompter is a distraction-free teleprompter for presenters. Mount your iPad
+> eTeleprompter is a distraction-free teleprompter for presenters. Mount your iPad
 > on a mirror rig or read straight from the screen, then scroll your script at
 > a steady, controllable speed while you talk.
 >
@@ -57,7 +57,7 @@ automatically; paste what you want into App Store Connect yourself.
 > With a hardware keyboard: space to play or pause, arrow keys for speed, escape
 > to exit.
 >
-> iPrompter works entirely offline. It collects no data, contains no ads, no
+> eTeleprompter works entirely offline. It collects no data, contains no ads, no
 > tracking, no subscriptions and no account.
 
 ## Keywords (100 char max, comma-separated, no spaces)
@@ -81,7 +81,7 @@ teleprompter,prompter,script,speech,presentation,video,mirror,autocue,speaking,r
 Answer **"Data Not Collected"**. This is accurate and verifiable: the app has no
 networking code of any kind, no analytics, no third-party SDKs, and no account
 system. The only persistence is SwiftData on-device plus one UserDefaults key,
-both declared in `iPrompter/PrivacyInfo.xcprivacy`.
+both declared in `eTeleprompter/PrivacyInfo.xcprivacy`.
 
 ## Export compliance
 
@@ -102,7 +102,7 @@ orientation.
 
 ## Review notes (optional but helps)
 
-> iPrompter is fully offline and needs no account or sign-in. To try the core
+> eTeleprompter is fully offline and needs no account or sign-in. To try the core
 > feature: create a script with the + button, type or paste some text, tap
 > "Start Prompter", then press play. Tap anywhere to bring the controls back
 > while it scrolls.

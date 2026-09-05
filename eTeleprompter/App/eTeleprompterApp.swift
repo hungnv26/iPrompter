@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct iPrompterApp: App {
+struct eTeleprompterApp: App {
     @State private var appState = AppState()
 
     var body: some Scene {

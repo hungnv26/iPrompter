@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build a signed App Store archive of iPrompter for iPad and export a .ipa.
+# Build a signed App Store archive of eTeleprompter for iPad and export a .ipa.
 #
 # Usage:  ./tools-appstore-archive.sh [output-dir]
 #
@@ -19,8 +19,8 @@
 set -euo pipefail
 
 cd "$(dirname "$0")"
-OUT="${1:-$HOME/Downloads/iPrompter-appstore}"
-ARCHIVE="$OUT/iPrompter.xcarchive"
+OUT="${1:-$HOME/Downloads/eTeleprompter-appstore}"
+ARCHIVE="$OUT/eTeleprompter.xcarchive"
 LOCAL_SIGNING="Config/Signing.local.xcconfig"
 
 if [ ! -f "$LOCAL_SIGNING" ]; then
@@ -47,7 +47,7 @@ mkdir -p "$OUT"
 rm -rf "$ARCHIVE"
 
 echo "==> Archiving (Release, generic/platform=iOS)"
-xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
+xcodebuild -project eTeleprompter.xcodeproj -scheme eTeleprompter \
   -destination 'generic/platform=iOS' -configuration Release \
   -archivePath "$ARCHIVE" archive \
   -allowProvisioningUpdates \
@@ -56,7 +56,7 @@ xcodebuild -project iPrompter.xcodeproj -scheme iPrompter \
 [ -d "$ARCHIVE" ] || { echo "archive not produced" >&2; exit 1; }
 
 # Sanity-check the two things App Store Connect rejects builds over.
-APP="$ARCHIVE/Products/Applications/iPrompter.app"
+APP="$ARCHIVE/Products/Applications/eTeleprompter.app"
 echo "==> Preflight"
 if [ -f "$APP/PrivacyInfo.xcprivacy" ]; then
   echo "    privacy manifest: present"
@@ -111,7 +111,7 @@ IPA="$(find "$OUT" -maxdepth 1 -name '*.ipa' | head -1)"
 echo "==> Verifying the exported .ipa"
 VERIFY_DIR="$(mktemp -d)"
 unzip -q "$IPA" -d "$VERIFY_DIR"
-SIGNER="$(codesign -dvv "$VERIFY_DIR/Payload/iPrompter.app" 2>&1 \
+SIGNER="$(codesign -dvv "$VERIFY_DIR/Payload/eTeleprompter.app" 2>&1 \
   | sed -n 's/^Authority=//p' | head -1)"
 echo "    signed by: $SIGNER"
 case "$SIGNER" in
@@ -122,7 +122,7 @@ case "$SIGNER" in
     echo "    this at upload validation. Check that your team has an Apple" >&2
     echo "    Distribution certificate and that Xcode is signed in." >&2 ;;
 esac
-if [ -f "$VERIFY_DIR/Payload/iPrompter.app/PrivacyInfo.xcprivacy" ]; then
+if [ -f "$VERIFY_DIR/Payload/eTeleprompter.app/PrivacyInfo.xcprivacy" ]; then
   echo "    privacy manifest: present in .ipa"
 else
   echo "    privacy manifest: MISSING from .ipa — expect ITMS-91053" >&2

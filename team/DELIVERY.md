@@ -1,4 +1,4 @@
-# iPrompter — Delivery Report
+# eTeleprompter — Delivery Report
 
 **Date:** 2026-07-30  
 **Verdict:** PASS — MVP complete, QA round 3 verified, all acceptance items cleared.
@@ -114,7 +114,7 @@
    The control overlay auto-hides 3 s after the last user interaction during playback (per SPEC F3). In practice, any action taking longer than 3 s (e.g., reading a dense paragraph, pausing to think before speaking) will hide the controls and require a gesture to reveal them again. This is not a defect, but a product-design decision worth revisiting: consider whether 5–10 s would be more comfortable for presenters.
 
 3. **Two unexplained macOS crash reports from early development**  
-   Two crash logs exist from 02:30 during early WP5 work (`~/Library/Logs/DiagnosticReports/iPrompter-2026-07-30-0231*.ips`). These were not reproduced in rounds 2–3 and were not investigated. They may indicate transient issues since resolved (e.g., by the RootView content-replacement fix in round 2), or may be environmental artifacts from the build/run environment.
+   Two crash logs exist from 02:30 during early WP5 work (`~/Library/Logs/DiagnosticReports/eTeleprompter-2026-07-30-0231*.ips`). These were not reproduced in rounds 2–3 and were not investigated. They may indicate transient issues since resolved (e.g., by the RootView content-replacement fix in round 2), or may be environmental artifacts from the build/run environment.
 
 ## Explicitly Out of Scope (Post-MVP)
 

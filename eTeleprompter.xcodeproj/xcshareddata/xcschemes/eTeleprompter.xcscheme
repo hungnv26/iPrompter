@@ -15,10 +15,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E94F61041F6789C7FDB46B2D"
-               BuildableName = "iPrompter.app"
-               BlueprintName = "iPrompter"
-               ReferencedContainer = "container:iPrompter.xcodeproj">
+               BlueprintIdentifier = "AA5B037A163F26D98DEF8267"
+               BuildableName = "eTeleprompter.app"
+               BlueprintName = "eTeleprompter"
+               ReferencedContainer = "container:eTeleprompter.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E94F61041F6789C7FDB46B2D"
-            BuildableName = "iPrompter.app"
-            BlueprintName = "iPrompter"
-            ReferencedContainer = "container:iPrompter.xcodeproj">
+            BlueprintIdentifier = "AA5B037A163F26D98DEF8267"
+            BuildableName = "eTeleprompter.app"
+            BlueprintName = "eTeleprompter"
+            ReferencedContainer = "container:eTeleprompter.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
@@ -44,10 +44,10 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "58C8E10C67248C1D7528978D"
-               BuildableName = "iPrompterTests.xctest"
-               BlueprintName = "iPrompterTests"
-               ReferencedContainer = "container:iPrompter.xcodeproj">
+               BlueprintIdentifier = "0CD5CA525035CD3440A47AC5"
+               BuildableName = "eTeleprompterTests.xctest"
+               BlueprintName = "eTeleprompterTests"
+               ReferencedContainer = "container:eTeleprompter.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -68,10 +68,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E94F61041F6789C7FDB46B2D"
-            BuildableName = "iPrompter.app"
-            BlueprintName = "iPrompter"
-            ReferencedContainer = "container:iPrompter.xcodeproj">
+            BlueprintIdentifier = "AA5B037A163F26D98DEF8267"
+            BuildableName = "eTeleprompter.app"
+            BlueprintName = "eTeleprompter"
+            ReferencedContainer = "container:eTeleprompter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -87,10 +87,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E94F61041F6789C7FDB46B2D"
-            BuildableName = "iPrompter.app"
-            BlueprintName = "iPrompter"
-            ReferencedContainer = "container:iPrompter.xcodeproj">
+            BlueprintIdentifier = "AA5B037A163F26D98DEF8267"
+            BuildableName = "eTeleprompter.app"
+            BlueprintName = "eTeleprompter"
+            ReferencedContainer = "container:eTeleprompter.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

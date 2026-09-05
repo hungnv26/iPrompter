@@ -1,7 +1,7 @@
 # XcodeGen spec. Regenerate with: xcodegen generate
 # Sources use synchronized (buildable) folders — add/remove Swift files freely
-# under iPrompter/ or iPrompterTests/ WITHOUT regenerating the project.
-name: iPrompter
+# under eTeleprompter/ or eTeleprompterTests/ WITHOUT regenerating the project.
+name: eTeleprompter
 options:
   bundleIdPrefix: com.iprompter
   deploymentTarget:
@@ -18,19 +18,22 @@ settings:
     CODE_SIGN_IDENTITY[sdk=iphoneos*]: "Apple Development"
     # DEVELOPMENT_TEAM is NOT set here on purpose — see Config/Signing.xcconfig.
 targets:
-  iPrompter:
+  eTeleprompter:
     type: application
     supportedDestinations: [iOS, macOS]
     configFiles:
       Debug: Config/Signing.xcconfig
       Release: Config/Signing.xcconfig
     sources:
-      - path: iPrompter
+      - path: eTeleprompter
         type: syncedFolder
     settings:
       base:
+        # Bundle id is permanently bound to the App Store record
+        # (app 6805915935) and predates the rename — do not change it.
         PRODUCT_BUNDLE_IDENTIFIER: com.iprompter.iPrompter
-        PRODUCT_NAME: iPrompter
+        PRODUCT_NAME: eTeleprompter
+        INFOPLIST_KEY_CFBundleDisplayName: eTeleprompter
         TARGETED_DEVICE_FAMILY: "2"
         SUPPORTS_MACCATALYST: NO
         ENABLE_PREVIEWS: YES
@@ -43,30 +46,30 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
-        CURRENT_PROJECT_VERSION: 2
+        CURRENT_PROJECT_VERSION: 3
         MARKETING_VERSION: "1.0"
-  iPrompterTests:
+  eTeleprompterTests:
     type: bundle.unit-test
     supportedDestinations: [iOS, macOS]
     sources:
-      - path: iPrompterTests
+      - path: eTeleprompterTests
         type: syncedFolder
     settings:
       base:
         # Multiplatform-safe test host (Xcode template style):
         # BUNDLE_EXECUTABLE_FOLDER_PATH is empty on iOS and "Contents/MacOS"
         # on macOS. Overrides XcodeGen's auto-generated iOS-only TEST_HOST.
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/iPrompter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iPrompter"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/eTeleprompter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/eTeleprompter"
         BUNDLE_LOADER: "$(TEST_HOST)"
     dependencies:
-      - target: iPrompter
+      - target: eTeleprompter
 schemes:
-  iPrompter:
+  eTeleprompter:
     build:
       targets:
-        iPrompter: all
+        eTeleprompter: all
     run:
       config: Debug
     test:
       config: Debug
-      targets: [iPrompterTests]
+      targets: [eTeleprompterTests]

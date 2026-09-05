@@ -7,66 +7,66 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
-		10278BA0EABB0C6CFB8CD2F4 /* PBXContainerItemProxy */ = {
+		D9A95F6B37193C2E1BAD19F8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 1DA5CF990D7BCA8CBBFA1F22 /* Project object */;
+			containerPortal = 77B4E35A0492AB3444944E3E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E94F61041F6789C7FDB46B2D;
-			remoteInfo = iPrompter;
+			remoteGlobalIDString = AA5B037A163F26D98DEF8267;
+			remoteInfo = eTeleprompter;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0DEE464515D52FB53DC49F88 /* iPrompter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = iPrompter.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		2535BEB0AF24EB47D440C5F7 /* iPrompterTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = iPrompterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		450943595596B3EBA8BE5DCE /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		4274B45E6DE7AEA0D124F732 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		9C5126CD65939B048E9D3256 /* eTeleprompterTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = eTeleprompterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF78AF10C7D100F46D8AFB96 /* eTeleprompter.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = eTeleprompter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		2FDC832AFA84FA877667DD41 /* iPrompter */ = {
+		AB46CB54353CB3B94F78F12C /* eTeleprompterTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			explicitFileTypes = {
 			};
 			explicitFolders = (
 			);
-			path = iPrompter;
+			path = eTeleprompterTests;
 			sourceTree = "<group>";
 		};
-		346EE62EBAE333B1E5D8DB6C /* iPrompterTests */ = {
+		DD0305570018A47A4FBEC508 /* eTeleprompter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			explicitFileTypes = {
 			};
 			explicitFolders = (
 			);
-			path = iPrompterTests;
+			path = eTeleprompter;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXGroup section */
-		00095E8B6399F2E45598BA55 = {
+		66C541BC7DA295F12A4229BA /* Config */ = {
 			isa = PBXGroup;
 			children = (
-				6843F8CC7805992C062877FC /* Config */,
-				2FDC832AFA84FA877667DD41 /* iPrompter */,
-				346EE62EBAE333B1E5D8DB6C /* iPrompterTests */,
-				E90B1B833C5F00569F7AF8E3 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		6843F8CC7805992C062877FC /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				450943595596B3EBA8BE5DCE /* Signing.xcconfig */,
+				4274B45E6DE7AEA0D124F732 /* Signing.xcconfig */,
 			);
 			path = Config;
 			sourceTree = "<group>";
 		};
-		E90B1B833C5F00569F7AF8E3 /* Products */ = {
+		AAC74688E4AAB6F64A61AFDB = {
 			isa = PBXGroup;
 			children = (
-				0DEE464515D52FB53DC49F88 /* iPrompter.app */,
-				2535BEB0AF24EB47D440C5F7 /* iPrompterTests.xctest */,
+				66C541BC7DA295F12A4229BA /* Config */,
+				DD0305570018A47A4FBEC508 /* eTeleprompter */,
+				AB46CB54353CB3B94F78F12C /* eTeleprompterTests */,
+				ADC7B35EADD4CA28D9468CE1 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ADC7B35EADD4CA28D9468CE1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AF78AF10C7D100F46D8AFB96 /* eTeleprompter.app */,
+				9C5126CD65939B048E9D3256 /* eTeleprompterTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,95 +74,95 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		58C8E10C67248C1D7528978D /* iPrompterTests */ = {
+		0CD5CA525035CD3440A47AC5 /* eTeleprompterTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 656867BFE0BBCD5C50034598 /* Build configuration list for PBXNativeTarget "iPrompterTests" */;
+			buildConfigurationList = 66B4536B45CF44FF7B9C506C /* Build configuration list for PBXNativeTarget "eTeleprompterTests" */;
 			buildPhases = (
-				701CD53F1BA49C795BB26C09 /* Sources */,
-				04CC59C201E2CE5FB094C86D /* Resources */,
+				ADE864B44DA5EF75FEF45584 /* Sources */,
+				D63D82A5114A3361AE9B710B /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				C6F37EA0BB0332FDDDB3B7A0 /* PBXTargetDependency */,
+				2F2BB66C1E3FBC2D70892B46 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				346EE62EBAE333B1E5D8DB6C /* iPrompterTests */,
+				AB46CB54353CB3B94F78F12C /* eTeleprompterTests */,
 			);
-			name = iPrompterTests;
+			name = eTeleprompterTests;
 			packageProductDependencies = (
 			);
-			productName = iPrompterTests;
-			productReference = 2535BEB0AF24EB47D440C5F7 /* iPrompterTests.xctest */;
+			productName = eTeleprompterTests;
+			productReference = 9C5126CD65939B048E9D3256 /* eTeleprompterTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E94F61041F6789C7FDB46B2D /* iPrompter */ = {
+		AA5B037A163F26D98DEF8267 /* eTeleprompter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 464CDF9DA6C58304DC4A5FB5 /* Build configuration list for PBXNativeTarget "iPrompter" */;
+			buildConfigurationList = 40642BF440BDB325D2C535CC /* Build configuration list for PBXNativeTarget "eTeleprompter" */;
 			buildPhases = (
-				A981E9AF6F9B7E52033692D4 /* Sources */,
-				749A6A97489D9AF34902536A /* Resources */,
+				391AE72D1780D4797B74653A /* Sources */,
+				12D6ACE4A85D3F6D79C723FC /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				2FDC832AFA84FA877667DD41 /* iPrompter */,
+				DD0305570018A47A4FBEC508 /* eTeleprompter */,
 			);
-			name = iPrompter;
+			name = eTeleprompter;
 			packageProductDependencies = (
 			);
-			productName = iPrompter;
-			productReference = 0DEE464515D52FB53DC49F88 /* iPrompter.app */;
+			productName = eTeleprompter;
+			productReference = AF78AF10C7D100F46D8AFB96 /* eTeleprompter.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		1DA5CF990D7BCA8CBBFA1F22 /* Project object */ = {
+		77B4E35A0492AB3444944E3E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					58C8E10C67248C1D7528978D = {
+					0CD5CA525035CD3440A47AC5 = {
 						ProvisioningStyle = Automatic;
 					};
-					E94F61041F6789C7FDB46B2D = {
+					AA5B037A163F26D98DEF8267 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = B41098F838FA2C24E1B1BC75 /* Build configuration list for PBXProject "iPrompter" */;
+			buildConfigurationList = 550E9CDCE8A8B5FCCFF88D16 /* Build configuration list for PBXProject "eTeleprompter" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
 				en,
 			);
-			mainGroup = 00095E8B6399F2E45598BA55;
+			mainGroup = AAC74688E4AAB6F64A61AFDB;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = E90B1B833C5F00569F7AF8E3 /* Products */;
+			productRefGroup = ADC7B35EADD4CA28D9468CE1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E94F61041F6789C7FDB46B2D /* iPrompter */,
-				58C8E10C67248C1D7528978D /* iPrompterTests */,
+				AA5B037A163F26D98DEF8267 /* eTeleprompter */,
+				0CD5CA525035CD3440A47AC5 /* eTeleprompterTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		04CC59C201E2CE5FB094C86D /* Resources */ = {
+		12D6ACE4A85D3F6D79C723FC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		749A6A97489D9AF34902536A /* Resources */ = {
+		D63D82A5114A3361AE9B710B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -172,14 +172,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		701CD53F1BA49C795BB26C09 /* Sources */ = {
+		391AE72D1780D4797B74653A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A981E9AF6F9B7E52033692D4 /* Sources */ = {
+		ADE864B44DA5EF75FEF45584 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -189,84 +189,44 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		C6F37EA0BB0332FDDDB3B7A0 /* PBXTargetDependency */ = {
+		2F2BB66C1E3FBC2D70892B46 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E94F61041F6789C7FDB46B2D /* iPrompter */;
-			targetProxy = 10278BA0EABB0C6CFB8CD2F4 /* PBXContainerItemProxy */;
+			target = AA5B037A163F26D98DEF8267 /* eTeleprompter */;
+			targetProxy = D9A95F6B37193C2E1BAD19F8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		297B4C4562D5CD9472313FD3 /* Release */ = {
+		35FF765B174A6FEEF3931B68 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "-";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.iprompter.eTeleprompterTests;
 				SDKROOT = auto;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/eTeleprompter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/eTeleprompter";
 			};
-			name = Release;
+			name = Debug;
 		};
-		2E5C78C1C5708971C1C4C79F /* Release */ = {
+		3A81F279AE052A794B08C3AD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 450943595596B3EBA8BE5DCE /* Signing.xcconfig */;
+			baseConfigurationReference = 4274B45E6DE7AEA0D124F732 /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				ENABLE_PREVIEWS = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = eTeleprompter;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -277,7 +237,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iprompter.iPrompter;
-				PRODUCT_NAME = iPrompter;
+				PRODUCT_NAME = eTeleprompter;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
@@ -285,9 +245,9 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
-			name = Release;
+			name = Debug;
 		};
-		2F737B8C801A669268AE1218 /* Debug */ = {
+		C3590BE5FFBBDD444CA72782 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -296,18 +256,18 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.iprompter.iPrompterTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iprompter.eTeleprompterTests;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iPrompter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iPrompter";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/eTeleprompter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/eTeleprompter";
 			};
-			name = Debug;
+			name = Release;
 		};
-		BCFF344BDC677E38A4C2DAFC /* Debug */ = {
+		ECA22EB358150A1FB8FFB272 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -375,35 +335,77 @@
 			};
 			name = Debug;
 		};
-		C3E37313ED0726A03A530C82 /* Release */ = {
+		F1B179B5E1A97FD1D0B783DA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.iprompter.iPrompterTests;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iPrompter.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iPrompter";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
-		C5678AED7C4DAC1ADB363B29 /* Debug */ = {
+		FB58E1DBC60047CB056C4891 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 450943595596B3EBA8BE5DCE /* Signing.xcconfig */;
+			baseConfigurationReference = 4274B45E6DE7AEA0D124F732 /* Signing.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				ENABLE_PREVIEWS = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = eTeleprompter;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -414,7 +416,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.iprompter.iPrompter;
-				PRODUCT_NAME = iPrompter;
+				PRODUCT_NAME = eTeleprompter;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
@@ -422,39 +424,39 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
-			name = Debug;
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		464CDF9DA6C58304DC4A5FB5 /* Build configuration list for PBXNativeTarget "iPrompter" */ = {
+		40642BF440BDB325D2C535CC /* Build configuration list for PBXNativeTarget "eTeleprompter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C5678AED7C4DAC1ADB363B29 /* Debug */,
-				2E5C78C1C5708971C1C4C79F /* Release */,
+				3A81F279AE052A794B08C3AD /* Debug */,
+				FB58E1DBC60047CB056C4891 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		656867BFE0BBCD5C50034598 /* Build configuration list for PBXNativeTarget "iPrompterTests" */ = {
+		550E9CDCE8A8B5FCCFF88D16 /* Build configuration list for PBXProject "eTeleprompter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2F737B8C801A669268AE1218 /* Debug */,
-				C3E37313ED0726A03A530C82 /* Release */,
+				ECA22EB358150A1FB8FFB272 /* Debug */,
+				F1B179B5E1A97FD1D0B783DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		B41098F838FA2C24E1B1BC75 /* Build configuration list for PBXProject "iPrompter" */ = {
+		66B4536B45CF44FF7B9C506C /* Build configuration list for PBXNativeTarget "eTeleprompterTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BCFF344BDC677E38A4C2DAFC /* Debug */,
-				297B4C4562D5CD9472313FD3 /* Release */,
+				35FF765B174A6FEEF3931B68 /* Debug */,
+				C3590BE5FFBBDD444CA72782 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 1DA5CF990D7BCA8CBBFA1F22 /* Project object */;
+	rootObject = 77B4E35A0492AB3444944E3E /* Project object */;
 }

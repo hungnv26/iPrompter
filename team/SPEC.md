@@ -1,6 +1,6 @@
-# iPrompter — MVP Product Spec
+# eTeleprompter — MVP Product Spec
 
-**Product:** iPrompter — a native SwiftUI teleprompter for iPad and Mac.
+**Product:** eTeleprompter — a native SwiftUI teleprompter for iPad and Mac.
 **Platforms:** One SwiftUI multiplatform target, iPadOS 17+ and macOS 14+ (native, not Catalyst). MVVM, SwiftData persistence. (Locked by customer.)
 
 ## 1. Overview and target user
